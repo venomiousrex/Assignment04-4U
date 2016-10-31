@@ -9,7 +9,7 @@
  */
 public class Doctor {
 
-     //private variables
+    //private variables
     //private row coordinate
     private int row;
     //private column coordinate
@@ -61,6 +61,7 @@ public class Doctor {
 
     /**
      * Returns the row of where the doctor is located at
+     *
      * @return the number of row where the doctor is located at
      */
     public int getRow() {
@@ -92,5 +93,4 @@ public class Doctor {
         }
 
     }
-
 }

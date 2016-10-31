@@ -17,33 +17,55 @@ public class Game {
     public static void main(String[] args) {
         //state of the game
         boolean done = false;
-        int counter = 0;
 
-        int randomnumber = (int) (Math.random() * 12);
-     
+        //a random row coordinate for each doctor and daleks
+        int[] randomRow = new int[4];
+        int[] randomCol = new int[4];
 
+        //for loop assigning random values to characters (doc, daleks)
+        for (int i = 0; i < randomRow.length; i++) {
+            //random formula
+            int random = (int) (Math.random() * 12);
+            int random2 = (int) (Math.random() * 12);
+            //assigns randome number to the slot, (you can play around with this and set both array[i] to equal 0 and see yourself)
+            randomRow[i] = random;
+            randomCol[i] = random2;
+        }
+
+        //a for loop that goes through and checks if any coords are the same (i.e 5 and 5) 
+        for (int i = 0; i < randomRow.length - 1; i++) {
+
+            //assigns another random value if 2 of the coordinates ARE THE SAME, sends both coords to check if they're the same 
+            randomRow[i] = StartingSpawn.compareCoords(randomRow[i], randomRow[i + 1]);
+            randomCol[i] = StartingSpawn.compareCoords(randomCol[i], randomCol[i + 1]);
+
+        }
         //create board game
         Board board = new Board(12, 12);
 
         //creation of doctor
-        Doctor doctor = new Doctor(randomDoc,0);
+        Doctor doctor = new Doctor(randomRow[0], randomCol[0]);
 
         //creation of daleks
-        Dalek dalek = new Dalek(dalekRandom, 11);
-        Dalek dalek2 = new Dalek(dalekRandom, 5);
-        Dalek dalek3 = new Dalek(dalekRandom,10);
+        Dalek dalek = new Dalek(randomRow[1], randomCol[1]);
+        Dalek dalek2 = new Dalek(randomRow[2], randomCol[2]);
+        Dalek dalek3 = new Dalek(randomRow[3], randomCol[3]);
 
-     
-        //display message on screen
-        board.displayMessage("Please press the board");
+        //draws the doctor
+        board.putPeg(Color.GREEN, doctor.getRow(), doctor.getCol());
+
+        //draws the daleks
+        board.putPeg(Color.BLACK, dalek.getRow(), dalek.getCol());
+        board.putPeg(Color.BLACK, dalek2.getRow(), dalek2.getCol());
+        board.putPeg(Color.BLACK, dalek3.getRow(), dalek3.getCol());
+
+        //displays a message
+        board.displayMessage("Please click the board");
 
         //while loop that runs the game as long as doctor is alive, or all daleks are EXTERMINATED 
         while (!done) {
-
             //get a click on board 
             Coordinate click = board.getClick();
-            counter++;
-            System.out.println(counter);
             //removes the old position of peg for doctor 
             board.removePeg(doctor.getRow(), doctor.getCol());
 
@@ -51,6 +73,7 @@ public class Game {
             board.removePeg(dalek.getRow(), dalek.getCol());
             board.removePeg(dalek2.getRow(), dalek2.getCol());
             board.removePeg(dalek3.getRow(), dalek3.getCol());
+
 
             //get coordinates for ze doctor (row,col)
             int row = click.getRow();
@@ -67,10 +90,10 @@ public class Game {
             dalek2.advanceTowards(doctor);
             dalek3.advanceTowards(doctor);
 
-            //draws the daleks
-            board.putPeg(Color.yellow, dalek.getRow(), dalek.getCol());
-            board.putPeg(Color.yellow, dalek2.getRow(), dalek2.getCol());
-            board.putPeg(Color.yellow, dalek3.getRow(), dalek3.getCol());
+            //draws the updated daleks 
+            board.putPeg(Color.BLACK, dalek.getRow(), dalek.getCol());
+            board.putPeg(Color.BLACK, dalek2.getRow(), dalek2.getCol());
+            board.putPeg(Color.BLACK, dalek3.getRow(), dalek3.getCol());
 
             //if dalek collides with dalek2, crash both, and mark it red (Ask Lamont if we should remove yellow pegs)
             if (dalek.hasCrashed(dalek2)) {
@@ -105,18 +128,20 @@ public class Game {
                 board.drawLine(3, 5, 7, 3);
                 board.drawLine(7, 7, 3, 8);
                 board.drawLine(3, 5, 7, 7);
+                //ends the game by toggling done
                 done = true;
             }
 
             //checks if the doctor has encountered a dalek, if so, end the game and print YOU LOST!
             if (doctor.captureCheck(dalek) || doctor.captureCheck(dalek2) || doctor.captureCheck(dalek3)) {
+                board.putPeg(Color.yellow, doctor.getRow(), doctor.getCol());
                 board.displayMessage("Unfortunately, you have been EXTERMINATED!");
                 //Draws a "L" symbolizing LOSS!
                 board.drawLine(3, 4, 7, 4);
                 board.drawLine(7, 4, 7, 7);
+                //ends game by toggling done 
                 done = true;
             }
-
 
         }
 
