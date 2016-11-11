@@ -70,7 +70,7 @@ public class Dalek {
     }
 
     /**
-     * Returns the row of where the dalek is located at
+     * Returns the row of where the dalek is placed at
      *
      * @return the number of row where the dalek is located at
      */
